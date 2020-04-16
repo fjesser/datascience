@@ -18,6 +18,8 @@ for variable in df.columns:
     if df[variable].dtypes == "object":
         print(df[variable].value_counts())
 
+#another comment
+
 
 
 
