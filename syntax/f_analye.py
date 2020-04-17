@@ -16,12 +16,13 @@ df = pd.read_csv('./../input/hotel_bookings.csv')
 print(df["hotel"].unique())
 print(df["reservation_status"].value_counts())
 
+print(df.columns)
 for variable in df.columns:
     if df[variable].dtypes == "object":
         print(df[variable].value_counts())
 
 
-print(df.columns)
+
 
 # new arrival date variable in date format
 df['arrival_date'] = ((df.arrival_date_year.astype(str) +
@@ -32,4 +33,3 @@ df['arrival_date'] = ((df.arrival_date_year.astype(str) +
                       )
 
 
-print(df.arrival_date.head())
