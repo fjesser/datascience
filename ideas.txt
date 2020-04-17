@@ -14,3 +14,6 @@ Plot
 - Bookings that were changed to reoccurent visitors
 - Which agent books the most expensive rooms
 - Plot adr to agents
+
+Report
+- Create a report with Pweave
