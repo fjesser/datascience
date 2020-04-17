@@ -47,7 +47,7 @@ def fix_meal_manifestations(dataset):
     return(dataset)
 
 
-def convert_date(row):
+def convert_date_per_row(row):
     '''
     Function creates a date object by reading the year, month and date of arrival per row
     Input:
@@ -75,6 +75,10 @@ def convert_date(row):
     hotel_data['arrival_date'] = hotel_data.apply(convert_date, axis=1)
 '''
 
+
+def convert_date_in_dataset(dataset):
+    dataset['arrival_date'] = dataset.apply(convert_date_per_row, axis=1)
+    return(dataset)
 
 # hotel_data['arrival_date'] = hotel_data.apply(convert_date, axis=1, args=(
 # hotel_data['arrival_date_year'], hotel_data['arrival_date_month'], hotel_data['arrival_date_day_of_month']))
