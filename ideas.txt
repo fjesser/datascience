@@ -1,6 +1,4 @@
 General
-- Convert arrival to datetime object
-- Find out about meal packages
 - Find out difference between market_segment and distribution_channel
 
 Data_exploration
@@ -17,3 +15,10 @@ Plot
 
 Report
 - Create a report with Pweave
+
+
+Already done:
+
+General
+- Convert arrival to datetime object
+- Find out about meal packages

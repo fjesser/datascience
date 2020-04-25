@@ -1,4 +1,5 @@
 from datetime import date
+import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -84,4 +85,16 @@ def convert_date_in_dataset(dataset):
 # hotel_data['arrival_date_year'], hotel_data['arrival_date_month'], hotel_data['arrival_date_day_of_month']))
 
 
-print(hotel_data.head())
+def create_timespent_column(dataset):
+    '''
+    Both reservation_status_date and arrival_date have to be dateobjects!
+    TODO: Write a unit test for it and convert if needed
+    '''
+    dataset['Time_spent'] = np.where(dataset['reservation_status'] == 'Check-Out',
+                                     dataset['reservation_status_date'] - dataset['arrival_date'], np.nan)
+
+    # hotel_data['arrival_date'] = pd.to_datetime(hotel_data['arrival_date'])
+
+
+hotel_data = convert_date_in_dataset(hotel_data)
+print(hotel_data.loc[:, ['arrival_date', 'reservation_status_date', 'Time_spent']].head(10))
