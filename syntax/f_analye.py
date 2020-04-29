@@ -12,20 +12,26 @@ file_folder = os.path.dirname(__file__)
 df = pd.read_csv(os.path.join(file_folder, "..", "input", "hotel_bookings.csv"))
 
 
-# inspect
-#df.info()  # structure in R
-# df.index  # Zeilen ausgeben (besondere Python Art)
-# df.columns  # Spalten ausgeben
+# inspect (don't forget print)
+# df.info()  # structure in R
+# df.index  # gives rows (special python style)
+# df.columns  # gives columns
 
+print(df.columns) #print column names
+
+# show unique values of hotel column
 print(df["hotel"].unique())
+
+# give frequencies of reservation_status
 print(df["reservation_status"].value_counts())
 
-print(df.columns)
+
 #for variable in df.columns:
 #    if df[variable].dtypes == "object":
 #        print(df[variable].value_counts())
 
 
+# transform reservation_status_date to datetime object
 df['reservation_status_date'] = pd.to_datetime(df['reservation_status_date'])
 
 # new arrival date variable in date format
@@ -49,11 +55,11 @@ df['cost'] = np.where(df['reservation_status'] == "Check-Out",
 # drop columns starting with arrival_date_
 df = df.loc[:, ~df.columns.str.startswith('arrival_date_')]
 
+#
 df.to_csv(os.path.join(file_folder, "..", "input", "hotel_bookings_FE.csv"))
+
 
 print(df.loc[df["reservation_status"] == "Check-Out", ["arrival_date", "reservation_status", "reservation_status_date", "days_spent"]].head())
 print(df.days_spent)
 print(df.cost)
-#print(df.reservation_status_date - df.arrival_date)
-#print(df.info())
 print(df.columns)
