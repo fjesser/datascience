@@ -1,12 +1,8 @@
-from datetime import date
+import datetime as dt
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
-
-
-# Load hotel data set from input folder
-hotel_data = pd.read_csv("../input/hotel_bookings.csv")
 
 
 def export_dataset_description_to_csv(dataset):
@@ -34,8 +30,6 @@ def print_occurence_of_object_types(dataset):
             print(dataset[variable].value_counts())
 
 
-# print_occurence_of_object_types(hotel_data)
-
 def fix_meal_manifestations(dataset):
     '''
     Function adds undefined meals to SC meals (according to kaggle, Undefined/SC - no meal)
@@ -44,7 +38,7 @@ def fix_meal_manifestations(dataset):
     Returns:
       dataset: pd.dataFrame object in which SC = Undefined + SC from input
     '''
-    dataset['meal'] = hotel_data['meal'].replace(to_replace="Undefined", value="SC")
+    dataset['meal'] = dataset['meal'].replace(to_replace="Undefined", value="SC")
     return(dataset)
 
 
@@ -59,7 +53,6 @@ def convert_date_per_row(row):
     year = row['arrival_date_year']
     month = row['arrival_date_month']
     day = row['arrival_date_day_of_month']
-
     month = month.capitalize()
     months_string = ['January', 'February', 'March', 'April', 'May', 'June',
                      'July', 'August', 'September', 'October', 'November', 'December']
@@ -78,23 +71,76 @@ def convert_date_per_row(row):
 
 
 def convert_date_in_dataset(dataset):
-    dataset['arrival_date'] = dataset.apply(convert_date_per_row, axis=1)
+    '''
+    This function is taken from Felix; my try is commented out
+    '''
+    dataset['arrival_date'] = ((dataset.arrival_date_year.astype(str) +
+                                dataset.arrival_date_month +
+                                dataset.arrival_date_day_of_month.astype(str)
+                                )
+                               .pipe(pd.to_datetime, format="%Y%B%d")
+                               )
+
+    # dataset['arrival_date'] = dataset.apply(convert_date_per_row, axis=1)
     return(dataset)
 
 # hotel_data['arrival_date'] = hotel_data.apply(convert_date, axis=1, args=(
 # hotel_data['arrival_date_year'], hotel_data['arrival_date_month'], hotel_data['arrival_date_day_of_month']))
 
 
-def create_timespent_column(dataset):
+def create_days_spent_column(dataset):
     '''
     Both reservation_status_date and arrival_date have to be dateobjects!
     TODO: Write a unit test for it and convert if needed
     '''
-    dataset['Time_spent'] = np.where(dataset['reservation_status'] == 'Check-Out',
-                                     dataset['reservation_status_date'] - dataset['arrival_date'], np.nan)
+    dataset['reservation_status_date'] = pd.to_datetime(dataset['reservation_status_date'])
+    dataset['days_spent'] = np.where(dataset['reservation_status'] == 'Check-Out',
+                                     (dataset['reservation_status_date'] - dataset['arrival_date']).dt.days, np.nan)
+    return(dataset)
 
     # hotel_data['arrival_date'] = pd.to_datetime(hotel_data['arrival_date'])
 
 
-hotel_data = convert_date_in_dataset(hotel_data)
-print(hotel_data.loc[:, ['arrival_date', 'reservation_status_date', 'Time_spent']].head(10))
+def create_cost_column(dataset):
+    '''
+    Create a cost value that is the average daily rate times the total days days_spent
+    '''
+    dataset['cost'] = np.where(dataset['reservation_status'] == 'Check-Out',
+                               dataset['adr'] * dataset['days_spent'], dataset['adr'])
+    return(dataset)
+
+
+def get_final_dataset():
+    '''
+    Load the hotel dataset and prepare it for plotting
+    Input: nothing
+    Returns: pd.dataFrame object that contains the hotel data in tidy format and
+    with new columns for the arrival_date, total days spent and cost for the stay
+    Unnecessary columns are deleted
+    '''
+    # Load hotel data set from input folder
+    dataset = pd.read_csv("../input/hotel_bookings.csv")
+
+    # Add new columns
+    dataset = convert_date_in_dataset(dataset)
+    dataset = create_days_spent_column(dataset)
+    dataset = create_cost_column(dataset)
+    dataset = fix_meal_manifestations(dataset)
+
+    # Delete now Unnecessary columns
+    dataset.drop(['arrival_date_year', 'arrival_date_month',
+                  'arrival_date_day_of_month', 'adr', 'reservation_status_date'], axis=1)
+
+    return(dataset)
+
+
+def write_final_dataset(dataset):
+    '''
+    Create a csv-file with the final dataset, that was curated
+    '''
+    dataset.to_csv("../input/hotel_bookings_mh.csv")
+
+
+if __name__ == '__main__':
+    hotel_data = get_final_dataset()
+    write_final_dataset(hotel_data)
