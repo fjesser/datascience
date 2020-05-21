@@ -109,6 +109,13 @@ def create_cost_column(dataset):
                                dataset['adr'] * dataset['days_spent'], dataset['adr'])
     return(dataset)
 
+def set_noshows_to_na(dataset):
+    '''
+    Set occurences of "No-Show" in reservation_status column to NA
+    '''
+    dataset['reservation_status'] = np.where(dataset['reservation_status'] == 'No-Show', np.nan, dataset['reservation_status'])
+    return(dataset)
+
 
 def get_final_dataset():
     '''
@@ -126,6 +133,7 @@ def get_final_dataset():
     dataset = create_days_spent_column(dataset)
     dataset = create_cost_column(dataset)
     dataset = fix_meal_manifestations(dataset)
+    dataset = set_noshows_to_na(dataset)
 
     # Delete now Unnecessary columns
     dataset.drop(['arrival_date_year', 'arrival_date_month',
