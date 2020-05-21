@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import os
 
-#save folder in variable
+#save folder in variablex
 file_folder = os.path.dirname(__file__)
 
 # load data
