@@ -3,8 +3,6 @@ General
 
 Data_exploration
 - Find out if is_repeated_guest includes people who never stayed but cancelled
-- Create new column with leave date
-- Create new column with total cost for the stay
 - Check dates when most people left and see their nationality and find out if this is a national celebration day
 
 Plot
@@ -12,6 +10,13 @@ Plot
 - Bookings that were changed to reoccurent visitors
 - Which agent books the most expensive rooms
 - Plot adr to agents
+
+Models
+- Predict reservation status (with different models)
+    - Linear regression
+    - Linear regression with regularization
+    - PCA
+    - 
 
 Report
 - Create a report with Pweave
@@ -22,3 +27,5 @@ Already done:
 General
 - Convert arrival to datetime object
 - Find out about meal packages
+- Create new column with leave date
+- Create new column with total cost for the stay
