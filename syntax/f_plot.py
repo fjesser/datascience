@@ -9,13 +9,14 @@ Created on Fri Jun 19 13:39:46 2020
 # %% Preparations
 
 # import modules
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import os
+import pandas as pd
 import seaborn as sns
-
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
+from sklearn import tree
 
 # save folder in variablex
 file_folder = os.path.dirname(__file__)
@@ -27,6 +28,7 @@ df = pd.read_csv(os.path.join(file_folder, "..",
 
 
 # %% inspect data
+df.info()
 df.head()
 df.columns
 
@@ -40,13 +42,9 @@ log_model.coef_
 np.exp(log_model.coef_)
 
 cnf_matrix = metrics.confusion_matrix(df.is_canceled,
-                               log_model.predict(df[['cost']]))
+                                      log_model.predict(df[['cost']]))
 cnf_matrix
 
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-%matplotlib inline
 
 class_names=[0,1] # name  of classes
 fig, ax = plt.subplots()
@@ -62,3 +60,19 @@ plt.ylabel('Actual label')
 plt.xlabel('Predicted label')
 
 plt.show()
+
+
+
+# %% Decision Tree
+# create a classifier instance
+features = ['hotel', 'lead_time', 'arrival_date', 'adults', 'children',
+            'babies', 'meal', 'country', 'market_segment',
+            'distribution_channel', 'is_repeated_guest',
+            'previous_cancellations', 'reserved_room_type',
+            'booking_changes', 'agent', 'company', 'days_spent', 'cost']
+features = ['babies', 'adults']
+
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(df[features], df.is_canceled)
+
+tree.plot_tree(clf)
