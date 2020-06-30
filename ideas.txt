@@ -16,7 +16,8 @@ Models
     - Linear regression
     - Linear regression with regularization
     - PCA
-    - 
+    - Decision Tree
+        - evaluate different evaluation metrics (accuracy, precision, recall)
 
 Report
 - Create a report with Pweave
